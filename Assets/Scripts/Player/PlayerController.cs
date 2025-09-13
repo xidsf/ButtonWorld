@@ -255,11 +255,4 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         onDeath?.Invoke();
     }
-
-    public void RecoverPlayer()
-    {
-        isDeath = false;
-        myRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
-        myInput.currentActionMap.Enable();
-    }
 }

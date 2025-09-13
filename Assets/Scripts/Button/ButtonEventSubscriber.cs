@@ -1,38 +1,32 @@
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ButtonEventSubscriber : MonoBehaviour
 {
-    public Action<bool> onPressedEvents;
+    public Action<bool> onPressedEvents; //event랑 Action을 몇 개를 곂쳐놓은거야 과거의 나...
     public Action onUnPressedEvents;
     public Action playerInteractoinEvents;
     public ButtonController.ButtonType buttonType;
-    
-    private void Start()
-    {
-        SubscribeButton();
-        SceneManager.sceneUnloaded += UnSubscribeButton;
-    }
 
-    private void SubscribeButton()
+    public void SubscribeButton()
     {
         foreach (var button in ButtonManager.Instance.buttons[(int)buttonType])
         {
+            //Debug.Log($"{name} door sub button");
             button.onPressed += onPressedEvents;
             button.onUnPressed += onUnPressedEvents;
             button.playerInteration += playerInteractoinEvents;
         }
     }
 
-    private void UnSubscribeButton(Scene scene)
+    public void UnSubscribeButton()
     {
         foreach (var button in ButtonManager.Instance.buttons[(int)buttonType])
         {
+            //Debug.Log($"{name} door unsub button");
             button.onPressed -= onPressedEvents;
             button.onUnPressed -= onUnPressedEvents;
             button.playerInteration -= playerInteractoinEvents;
         }
-        SceneManager.sceneUnloaded -= UnSubscribeButton;
     }
 }

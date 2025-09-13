@@ -1,12 +1,11 @@
 using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 
 enum UIType
 {
     None,
-    StageSelect,
-    Settings,
-    Exit
+    StageSelect
 }
 
 public class MenuUIManager : MonoBehaviour
@@ -18,79 +17,71 @@ public class MenuUIManager : MonoBehaviour
     private Vector3 titleOriginPos;
     [SerializeField] private RectTransform StageSelectObj;
     private Vector3 stageSelectOriginPos;
-    [SerializeField] private RectTransform SettingsRectTrans;
-    private Vector3 settingsOriginPos;
-    [SerializeField] private RectTransform ExitRectTrans;
-    private Vector3 exitOriginPos;
 
     private float uiMoveTime = 0.5f;
-
-    [SerializeField] private GameObject MenuSelectUI;
+    private bool isChanging = false;
 
     UIType frontUI = UIType.None;
 
     private void Start()
     {
+        StartCoroutine(UIManager.Instance.FadeIn());
         GetOriginPos();
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnClickReturnButton();
+        }
     }
 
     private void GetOriginPos()
     {
         titleOriginPos = TitleRectTrans.localPosition;
         stageSelectOriginPos = StageSelectObj.localPosition;
-        settingsOriginPos = SettingsRectTrans.localPosition;
-        exitOriginPos = ExitRectTrans.localPosition;
     }
 
     public void OnClickStageSelectButton()
     {
-        if(frontUI != UIType.None) return;
-        frontUI = UIType.StageSelect;
-        TitleRectTrans.DOLocalMoveY(titleOriginPos.x - MoveXDistance, uiMoveTime).SetEase(Ease.InOutBack);
-        StageSelectObj.DOLocalMoveY(stageSelectOriginPos.x - MoveXDistance, uiMoveTime).SetEase(Ease.InOutBack);
-    }
+        if(frontUI != UIType.None || isChanging) return;
+        StartCoroutine(ConversionTimeCoroutine());
 
-    public void OnClickSettingsButton()
-    {
-        if (frontUI != UIType.None) return;
-        frontUI = UIType.Settings;
-        TitleRectTrans.DOLocalMoveX(titleOriginPos.y - MoveYDistance, uiMoveTime).SetEase(Ease.InOutBack);
-        SettingsRectTrans.DOLocalMoveX(settingsOriginPos.y - MoveYDistance, uiMoveTime).SetEase(Ease.InOutBack);
+        TitleRectTrans.DOLocalMoveX(titleOriginPos.x - MoveXDistance, uiMoveTime).SetEase(Ease.InOutBack);
+        StageSelectObj.DOLocalMoveX(stageSelectOriginPos.x - MoveXDistance, uiMoveTime).SetEase(Ease.InOutBack);
+
+        frontUI = UIType.StageSelect;
     }
 
     public void OnClickExitButton()
     {
-        if(frontUI != UIType.None) return;
-        frontUI = UIType.Exit;
-        ExitRectTrans.DOLocalMoveY(exitOriginPos.y - MoveYDistance, uiMoveTime).SetEase(Ease.InOutBack);
+        Application.Quit();
     }
 
     public void OnClickReturnButton()
     {
-        if(frontUI == UIType.None) return;
-        
-        switch (frontUI)
-        {
-            case UIType.StageSelect:
-                StageSelectObj.DOLocalMove(stageSelectOriginPos, uiMoveTime).SetEase(Ease.InOutBack);
-                TitleRectTrans.DOLocalMove(titleOriginPos, uiMoveTime).SetEase(Ease.InOutBack);
-                break;
-            case UIType.Settings:
-                SettingsRectTrans.DOLocalMove(settingsOriginPos, uiMoveTime).SetEase(Ease.InOutBack);
-                TitleRectTrans.DOLocalMove(titleOriginPos, uiMoveTime).SetEase(Ease.InOutBack);
-                break;
-            case UIType.Exit:
-                ExitRectTrans.DOLocalMove(exitOriginPos, uiMoveTime).SetEase(Ease.InOutBack);
-                break;
-        }
+        if(frontUI != UIType.StageSelect || isChanging) return;
+        StartCoroutine(ConversionTimeCoroutine());
+
+        TitleRectTrans.DOLocalMoveX(titleOriginPos.x, uiMoveTime).SetEase(Ease.InOutBack);
+        StageSelectObj.DOLocalMoveX(stageSelectOriginPos.x, uiMoveTime).SetEase(Ease.InOutBack);
 
         frontUI = UIType.None;
-
     }
 
-    public void OnClickQuitButton()
+    IEnumerator ConversionTimeCoroutine()
     {
-        Application.Quit();
+        if(isChanging) yield break;
+        isChanging = true;
+        yield return new WaitForSeconds(uiMoveTime);
+        isChanging = false;
+    }
+
+    public void OnClickStageButton(int stageNum)
+    {
+        isChanging = true;
+        GameManager.Instance.LoadStage(stageNum);
     }
 
 }

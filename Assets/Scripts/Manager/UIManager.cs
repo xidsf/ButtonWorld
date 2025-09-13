@@ -10,8 +10,10 @@ public class UIManager : Singleton<UIManager>
 
     public IEnumerator FadeOut()
     {
-        float elapsed = 0f;
+        fadeImage.gameObject.SetActive(true);
 
+        float elapsed = 0f;
+        
         while (elapsed < FADE_TIME)
         {
             elapsed += Time.deltaTime;
@@ -25,6 +27,7 @@ public class UIManager : Singleton<UIManager>
 
     public IEnumerator FadeIn()
     {
+        fadeImage.gameObject.SetActive(true);
         float elapsed = 0f;
 
         while (elapsed < FADE_TIME)
@@ -36,9 +39,10 @@ public class UIManager : Singleton<UIManager>
         }
 
         SetFadeAlpha(0f);
+        fadeImage.gameObject.SetActive(false);
     }
 
-    public void SetFadeAlpha(float alpha)
+    private void SetFadeAlpha(float alpha)
     {
         if (fadeImage != null)
         {

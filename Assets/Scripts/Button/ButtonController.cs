@@ -17,6 +17,7 @@ public class ButtonController : MonoBehaviour
     [SerializeField] SpriteRenderer bottomSpriteRenderer;
     [SerializeField] Transform buttonTransform;
     [SerializeField] Sprite goldBottomSprite;
+    [SerializeField] bool isHorizontalButton;
 
     RigidbodyConstraints2D rigidConstrain = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
 
@@ -29,12 +30,35 @@ public class ButtonController : MonoBehaviour
 
     private bool isPressed = false;
     private float pressedY = 0.29f;
+    private Vector2 gravityDir = Vector2.zero;
 
     private void Start()
     {
-        buttonEventDetectArea.changePressed += PressEvent;
+        if (isHorizontalButton)
+        {
+            buttonRigid.gravityScale = 0;
+            float angle = transform.rotation.z;
+        }
         originLocalTransform = buttonTransform.localPosition;
         ChangeButtonBottom();
+    }
+
+    private void FixedUpdate()
+    {
+        if(isHorizontalButton)
+        {
+            //buttonRigid.AddForce()
+        }
+    }
+
+    private void OnEnable()
+    {
+        buttonEventDetectArea.changePressed = PressEvent;
+    }
+
+    private void OnDisable()
+    {
+        buttonEventDetectArea.changePressed = null;
     }
 
     private void ChangeButtonBottom()
@@ -61,7 +85,7 @@ public class ButtonController : MonoBehaviour
         }
     }
 
-    private void SetSameColorButtonsPressed()
+    private void SetSameColorButtonsPressed() //??이건 왜 여기에있음???
     {
         foreach (var button in ButtonManager.Instance.buttons[(int)buttonType])
         {
@@ -100,10 +124,4 @@ public class ButtonController : MonoBehaviour
             playerInteration?.Invoke();
         }
     }
-
-    private void OnDisable()
-    {
-        buttonEventDetectArea.changePressed -= PressEvent;
-    }
-
 }

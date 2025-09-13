@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class DoorController : MonoBehaviour
     Rigidbody2D myRigid;
 
     [SerializeField] Vector3 movePosition;
+    [SerializeField] float openSpeed;
     [SerializeField] float closeSpeed;
 
     private bool isFixed = false;
@@ -17,12 +19,15 @@ public class DoorController : MonoBehaviour
     {
         originPosition = transform.position;
         openPosition = transform.position + movePosition; 
+
         subscriber = GetComponent<ButtonEventSubscriber>();
         myRigid = GetComponent<Rigidbody2D>();
+
         subscriber.onPressedEvents += OpenDoor;
         subscriber.onUnPressedEvents += CloseDoor;
         subscriber.playerInteractoinEvents += ReleaseDoor;
     }
+
 
     private void OpenDoor(bool isFix)
     {
@@ -31,7 +36,8 @@ public class DoorController : MonoBehaviour
             isFixed = isFix;
         }
         StopAllCoroutines();
-        StartCoroutine(DoorMoveCoroutine(openPosition));
+        //StartCoroutine(DoorMoveCoroutine(openPosition));
+        myRigid.DOMove(openPosition, openSpeed).SetEase(Ease.Linear);
     }
 
     private void CloseDoor()
@@ -41,7 +47,8 @@ public class DoorController : MonoBehaviour
             return;
         }
         StopAllCoroutines();
-        StartCoroutine(DoorMoveCoroutine(originPosition));
+        //StartCoroutine(DoorMoveCoroutine(originPosition));
+        myRigid.DOMove(originPosition, closeSpeed).SetEase(Ease.Linear);
     }
 
     private void ReleaseDoor()

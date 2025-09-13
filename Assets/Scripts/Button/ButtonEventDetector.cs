@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ButtonEventDetector : MonoBehaviour
 {
-    public event Action<bool> changePressed;
+    public Action<bool> changePressed;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

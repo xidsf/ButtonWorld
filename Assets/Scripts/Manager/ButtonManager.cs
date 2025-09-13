@@ -5,24 +5,28 @@ using UnityEngine.SceneManagement;
 public class ButtonManager : Singleton<ButtonManager>
 {
     public List<ButtonController>[] buttons;
+    public List<ButtonEventSubscriber> eventSubscribers;
 
-    protected override void Awake()
+    public void SetStageEvent()
     {
-        base.Awake();
-        SetButtons(gameObject.scene, LoadSceneMode.Additive);
+        SetButtons();
+        SetDoors();
     }
 
-    private void OnEnable()
+    public void ResetStageEvent()
     {
-        SceneManager.sceneLoaded += SetButtons;
+        foreach (var door in eventSubscribers)
+        {
+            door.UnSubscribeButton();
+        }
+        eventSubscribers.Clear();
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].Clear();
+        }
     }
 
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= SetButtons;
-    }
-
-    public void SetButtons(Scene scene, LoadSceneMode mode)
+    private void SetButtons()
     {
         buttons = new List<ButtonController>[3];
         for (int i = 0; i < buttons.Length; i++)
@@ -37,4 +41,15 @@ public class ButtonManager : Singleton<ButtonManager>
         }
     }
 
+    private void SetDoors()
+    {
+        var findDoors = FindObjectsByType<ButtonEventSubscriber>(FindObjectsSortMode.None);
+
+        eventSubscribers = new List<ButtonEventSubscriber>(findDoors);
+
+        foreach (var door in eventSubscribers)
+        {
+            door.SubscribeButton();
+        }
+    }
 }
