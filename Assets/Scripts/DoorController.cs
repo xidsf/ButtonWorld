@@ -15,6 +15,8 @@ public class DoorController : MonoBehaviour
     Vector3 openPosition;
     Vector3 originPosition;
 
+    [SerializeField] Ease easeType;
+
     private void Awake()
     {
         originPosition = transform.position;
@@ -37,7 +39,8 @@ public class DoorController : MonoBehaviour
         }
         StopAllCoroutines();
         //StartCoroutine(DoorMoveCoroutine(openPosition));
-        myRigid.DOMove(openPosition, openSpeed).SetEase(Ease.Linear);
+        DOTween.Kill(myRigid);
+        myRigid.DOMove(openPosition, openSpeed).SetEase(easeType);
     }
 
     private void CloseDoor()
@@ -48,7 +51,8 @@ public class DoorController : MonoBehaviour
         }
         StopAllCoroutines();
         //StartCoroutine(DoorMoveCoroutine(originPosition));
-        myRigid.DOMove(originPosition, closeSpeed).SetEase(Ease.Linear);
+        DOTween.Kill(myRigid);
+        myRigid.DOMove(originPosition, closeSpeed).SetEase(easeType);
     }
 
     private void ReleaseDoor()

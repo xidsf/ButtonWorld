@@ -17,7 +17,6 @@ public class ButtonController : MonoBehaviour
     [SerializeField] SpriteRenderer bottomSpriteRenderer;
     [SerializeField] Transform buttonTransform;
     [SerializeField] Sprite goldBottomSprite;
-    [SerializeField] bool isHorizontalButton;
 
     RigidbodyConstraints2D rigidConstrain = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
 
@@ -30,25 +29,11 @@ public class ButtonController : MonoBehaviour
 
     private bool isPressed = false;
     private float pressedY = 0.29f;
-    private Vector2 gravityDir = Vector2.zero;
 
     private void Start()
     {
-        if (isHorizontalButton)
-        {
-            buttonRigid.gravityScale = 0;
-            float angle = transform.rotation.z;
-        }
         originLocalTransform = buttonTransform.localPosition;
         ChangeButtonBottom();
-    }
-
-    private void FixedUpdate()
-    {
-        if(isHorizontalButton)
-        {
-            //buttonRigid.AddForce()
-        }
     }
 
     private void OnEnable()

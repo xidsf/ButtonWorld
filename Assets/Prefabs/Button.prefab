@@ -155,7 +155,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingOrder: -2
   m_Sprite: {fileID: -2343516246449982055, guid: 8970052a3aecf884fbf11b91d29e54db, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -316,7 +316,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: -259877717753773891, guid: 1cc355016ce997c4c81b941f24af94b7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -431,7 +431,6 @@ MonoBehaviour:
   buttonTransform: {fileID: 974633661995392673}
   goldBottomSprite: {fileID: -7489520538022628354, guid: e70e75546a20dc244a932a7d6a70df34, type: 3}
   buttonType: 0
-  isPressed: 0
 --- !u!1 &5387578010350355072
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,10 +17,17 @@ public class GameManager : Singleton<GameManager>
     private int currentStageNum = -1;
     private GameObject currentStage = null;
 
+    public int CurrentStageNum { get { return currentStageNum; } }
+
     private GameObject[] stages;
     private GameObject playerPrefab;
     private const int STAGE_COUNT = 5;
     private CinemachineCamera cinemaCamera;
+
+    // 리셋 쿨타임 관련 변수 추가
+    private float lastResetTime = -10f;
+    private const float resetCooldown = 2f; 
+    public bool IsStageResetable { get { return(Time.time - lastResetTime >= resetCooldown); } }
 
     protected override void Awake()
     {
@@ -63,26 +70,29 @@ public class GameManager : Singleton<GameManager>
     public void LoadStage(int stage)
     {
         if (isChanging) return;
-
         StartCoroutine(LoadStageCoroutine(stage));
+        lastResetTime = Time.time;
     }
 
     public void ResetCurrStage()
     {
         if (isChanging) return;
+        if (Time.time - lastResetTime < resetCooldown && !playerInstance.IsDeath) return;
         StartCoroutine(ResetIngame());
+        lastResetTime = Time.time;
     }
 
     private IEnumerator LoadSelectMenuCoroutine()
     {
         isChanging = true;
         currentStage = null;
-        playerPrefab = null;
+        playerInstance = null;
         StartCoroutine(UIManager.Instance.FadeOut());
         yield return new WaitForSeconds(UIManager.FADE_TIME);
         currentStageNum = -1;
         LoadScene(SceneName.Menu);
         StartCoroutine(UIManager.Instance.FadeIn());
+
         isChanging = false;
     }
 
@@ -106,13 +116,14 @@ public class GameManager : Singleton<GameManager>
         playerInstance.onDeath += ResetCurrStage;
         cinemaCamera.Follow = playerInstance.gameObject.transform;
 
-
         currentStageNum = stage;
 
         currentStage = Instantiate(stages[currentStageNum], Vector3.zero, Quaternion.identity);
 
         StartCoroutine(UIManager.Instance.FadeIn());
         ButtonManager.Instance.SetStageEvent();
+
+        
         isChanging = false;
     }
 
@@ -160,12 +171,25 @@ public class GameManager : Singleton<GameManager>
         playerInstance.onDeath += ResetCurrStage;
         cinemaCamera.Follow = playerInstance.gameObject.transform;
 
-
         ButtonManager.Instance.SetStageEvent();
 
+        StartCoroutine(UIManager.Instance.FadeIn());
+        yield return new WaitForSeconds(UIManager.FADE_TIME);
 
         isChanging = false;
-        StartCoroutine(UIManager.Instance.FadeIn());
     }
 
+    public void ClearStage()
+    {
+        if (isChanging) return;
+        StartCoroutine(ClearCoroutine());
+    }
+
+    IEnumerator ClearCoroutine()
+    {
+        isChanging = true;
+        yield return new WaitForSeconds(1.3f);
+        UIManager.Instance.EnableClearUI();
+        isChanging = false;
+    }
 }

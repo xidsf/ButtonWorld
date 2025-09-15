@@ -6,7 +6,15 @@ public class UIManager : Singleton<UIManager>
 {
     [SerializeField] private Canvas fadeCanvas;
     [SerializeField] private Image fadeImage;
+    [SerializeField] private GameObject ClearUI;
+    [SerializeField] private GameObject PauseUI;
+
     public const float FADE_TIME = 0.5f;
+
+    public bool IsClear { get { return isClear; } }
+    private bool isClear = false;
+    public bool IsOpenIngameMenu { get { return isOpenIngameMenu; } }
+    private bool isOpenIngameMenu = false;
 
     public IEnumerator FadeOut()
     {
@@ -51,4 +59,40 @@ public class UIManager : Singleton<UIManager>
             fadeImage.color = color;
         }
     }
+
+    public void EnableClearUI()
+    {
+        if(GameManager.Instance.CurrentStageNum == -1) return;
+        isClear = true;
+        DisableIngameMenuUI();
+        ClearUI.SetActive(true);
+    }
+
+    public void OnClickReturnMenuButton()
+    {
+        GameManager.Instance.LoadSelectMenu();
+        Invoke("DisableClearUI", FADE_TIME);
+        DisableIngameMenuUI();
+    }
+
+    private void DisableClearUI()
+    {
+        isClear = false;
+        ClearUI.SetActive(false);
+    }
+
+    public void EnableIngameMenuUI()
+    {
+        if (GameManager.Instance.CurrentStageNum == -1) return;
+        if (isClear) return;
+        isOpenIngameMenu = true;
+        PauseUI.SetActive(true);
+    }
+
+    public void DisableIngameMenuUI()
+    {
+        isOpenIngameMenu = false;
+        PauseUI.SetActive(false);
+    }
+
 }

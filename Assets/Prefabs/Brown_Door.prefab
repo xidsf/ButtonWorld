@@ -227,6 +227,7 @@ MonoBehaviour:
   movePosition: {x: 0, y: 3, z: 0}
   openSpeed: 1
   closeSpeed: 1
+  easeType: 1
 --- !u!114 &3209054978977114179
 MonoBehaviour:
   m_ObjectHideFlags: 0

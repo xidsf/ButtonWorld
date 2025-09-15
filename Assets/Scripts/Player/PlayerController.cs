@@ -1,7 +1,9 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,6 +18,9 @@ public class PlayerController : MonoBehaviour
     float halfColliderWidth;
     float offset = 0.05f;
     bool isDeath = false;
+    bool isClear = false;
+
+    public bool IsDeath { get { return isDeath; } }
 
     [SerializeField] float jumpSpeed = 5f;
     [SerializeField] float moveSpeed = 5f;
@@ -25,6 +30,7 @@ public class PlayerController : MonoBehaviour
     string isFallingString = "isFalling";
     string isAirString = "isAir";
     string deathString = "isDeath";
+    string clearString = "isClear";
 
     LayerMask groundLayerMask;
     LayerMask buttonLayerMask;
@@ -32,6 +38,7 @@ public class PlayerController : MonoBehaviour
     Vector2 moveDir;
 
     public event Action onDeath;
+
 
     private void Start()
     {
@@ -49,7 +56,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if(isDeath) return;
+        if(isDeath || isClear) return;
         GroundCheck();
         ApplyMovement();
     }
@@ -95,8 +102,16 @@ public class PlayerController : MonoBehaviour
     {
         if (isAir) return;
 
+        
         Vector3 center = myColli.bounds.center;
         bool isStucked = false;
+
+        var coli = Physics2D.OverlapBox(myColli.bounds.center, myColli.bounds.size * 0.5f, 0f, groundLayerMask);
+        if (coli != null) //가끔 벽 안으로 들어가는 버그를 막기 위한 코드
+        {
+            isStucked = true;
+        }
+
         for (int i = -1; i < 2; i++)
         {
             if (isStucked) break;
@@ -173,6 +188,12 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyMovement()
     {
+        if (UIManager.Instance.IsOpenIngameMenu)
+        {
+            myAnim.SetBool(isRunString, false);
+            moveDir = Vector2.zero;
+        }
+
         myRigid.linearVelocityX = moveDir.x * moveSpeed;
         if (moveDir.x > 0)
         {
@@ -186,7 +207,8 @@ public class PlayerController : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        if(context.started)
+        if (UIManager.Instance.IsOpenIngameMenu) return;
+        if (context.started)
         {
             myAnim.SetBool(isRunString, true);
         }
@@ -199,6 +221,7 @@ public class PlayerController : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
+        if (UIManager.Instance.IsOpenIngameMenu) return;
         if (!isAir && context.started)
         {
             myAnim.SetTrigger(isJumpString);
@@ -208,9 +231,9 @@ public class PlayerController : MonoBehaviour
 
     public void Interacat(InputAction.CallbackContext context)
     {
+        if (UIManager.Instance.IsOpenIngameMenu) return;
         if (context.started)
         {
-            Debug.Log("interact");
             Collider2D[] colliders = Physics2D.OverlapCircleAll(myColli.bounds.center, halfColliderWidth * 2f, buttonLayerMask);
             Debug.DrawRay(myColli.bounds.center, Vector2.right * halfColliderWidth * 2f, Color.green, 5);
             foreach (Collider2D col in colliders)
@@ -218,7 +241,6 @@ public class PlayerController : MonoBehaviour
                 ButtonController button = col.GetComponentInParent<ButtonController>();
                 if (button != null)
                 {
-                    Debug.Log(button.name);
                     button.ReleaseSameColorPressedButton();
                 }
             }
@@ -227,10 +249,32 @@ public class PlayerController : MonoBehaviour
 
     public void Restart(InputAction.CallbackContext context)
     {
+        if (UIManager.Instance.IsOpenIngameMenu) return;
         if (context.started)
         {
-            myInput.currentActionMap.Disable();
-            onDeath?.Invoke();
+            if (isDeath || isClear) return;
+            if(GameManager.Instance.IsStageResetable)
+            {
+                myInput.currentActionMap.Disable();
+                onDeath?.Invoke();
+            }
+            
+        }
+    }
+
+    public void Exit(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            if (isDeath || isClear) return;
+            if (!UIManager.Instance.IsOpenIngameMenu)
+            {
+                UIManager.Instance.EnableIngameMenuUI();
+            }
+            else
+            {
+                UIManager.Instance.DisableIngameMenuUI();
+            }
         }
             
     }
@@ -243,16 +287,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    
-
     IEnumerator DeathCoroutine()
     {
-        if(isDeath) yield break;
+        UIManager.Instance.DisableIngameMenuUI();
+        if (isDeath || isClear) yield break;
         myRigid.constraints = RigidbodyConstraints2D.FreezeAll;
         isDeath = true;
         myAnim.SetTrigger(deathString);
         myInput.currentActionMap.Disable();
         yield return new WaitForSeconds(0.5f);
         onDeath?.Invoke();
+    }
+
+    public void OnCollisionGoal(Collider2D goalColli)
+    {
+        UIManager.Instance.DisableIngameMenuUI();
+        if (isDeath || isClear) return;
+        isClear = true;
+        var center = goalColli.bounds.center;
+        myRigid.constraints = RigidbodyConstraints2D.FreezeAll;
+        myInput.currentActionMap.Disable();
+        myAnim.SetTrigger(clearString);
+        transform.DOMove(center, 1f).SetEase(Ease.OutQuart);
     }
 }
