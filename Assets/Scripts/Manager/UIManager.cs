@@ -7,6 +7,7 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Canvas fadeCanvas;
     [SerializeField] private Image fadeImage;
     [SerializeField] private GameObject ClearUI;
+    [SerializeField] private GameObject nextStageButton;   
     [SerializeField] private GameObject PauseUI;
 
     public const float FADE_TIME = 0.5f;
@@ -65,6 +66,10 @@ public class UIManager : Singleton<UIManager>
         if(GameManager.Instance.CurrentStageNum == -1) return;
         isClear = true;
         DisableIngameMenuUI();
+        if (GameManager.Instance.CurrentStageNum == GameManager.STAGE_COUNT - 1)
+            nextStageButton.SetActive(false);
+        else
+            nextStageButton.SetActive(true);
         ClearUI.SetActive(true);
     }
 
@@ -73,6 +78,12 @@ public class UIManager : Singleton<UIManager>
         GameManager.Instance.LoadSelectMenu();
         Invoke("DisableClearUI", FADE_TIME);
         DisableIngameMenuUI();
+    }
+
+    public void OnClickNextStageButton()
+    {
+        GameManager.Instance.SetStageToNext();
+        GameManager.Instance.ResetCurrStage();
     }
 
     private void DisableClearUI()
@@ -93,6 +104,12 @@ public class UIManager : Singleton<UIManager>
     {
         isOpenIngameMenu = false;
         PauseUI.SetActive(false);
+    }
+
+    public void HideAllUI()
+    {
+        DisableClearUI();
+        DisableIngameMenuUI();
     }
 
 }

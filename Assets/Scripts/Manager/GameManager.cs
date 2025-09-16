@@ -12,16 +12,25 @@ public enum SceneName
 
 public class GameManager : Singleton<GameManager>
 {
+    public const int STAGE_COUNT = 5;
+
     private PlayerController playerInstance;
     bool isChanging = false;
     private int currentStageNum = -1;
     private GameObject currentStage = null;
 
     public int CurrentStageNum { get { return currentStageNum; } }
+    public void SetStageToNext()
+    {
+        currentStageNum++;
+        if (currentStageNum >= STAGE_COUNT)
+        {
+            currentStageNum = STAGE_COUNT - 1;
+        }
+    }
 
     private GameObject[] stages;
     private GameObject playerPrefab;
-    private const int STAGE_COUNT = 5;
     private CinemachineCamera cinemaCamera;
 
     // 리셋 쿨타임 관련 변수 추가
@@ -91,7 +100,6 @@ public class GameManager : Singleton<GameManager>
         yield return new WaitForSeconds(UIManager.FADE_TIME);
         currentStageNum = -1;
         LoadScene(SceneName.Menu);
-        StartCoroutine(UIManager.Instance.FadeIn());
 
         isChanging = false;
     }
@@ -172,6 +180,8 @@ public class GameManager : Singleton<GameManager>
         cinemaCamera.Follow = playerInstance.gameObject.transform;
 
         ButtonManager.Instance.SetStageEvent();
+
+        UIManager.Instance.HideAllUI();
 
         StartCoroutine(UIManager.Instance.FadeIn());
         yield return new WaitForSeconds(UIManager.FADE_TIME);
