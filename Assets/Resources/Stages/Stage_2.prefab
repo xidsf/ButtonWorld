@@ -18213,7 +18213,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 114595246120267782, guid: 363e6eb5de43c984f8eaef7a253cbfb5, type: 3}
       propertyPath: closeSpeed
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 114595246120267782, guid: 363e6eb5de43c984f8eaef7a253cbfb5, type: 3}
       propertyPath: movePosition.x
@@ -18365,7 +18365,7 @@ PrefabInstance:
       objectReference: {fileID: 5209543145158546878, guid: 6b00b0511918d3c4c98674d6027367bd, type: 3}
     - target: {fileID: 4852571213959116985, guid: e17b01626bc31fb4bb7340635289b37a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 23.5
+      value: 22.5
       objectReference: {fileID: 0}
     - target: {fileID: 4852571213959116985, guid: e17b01626bc31fb4bb7340635289b37a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -18435,11 +18435,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1972986865695061603, guid: 6e5622096479dbb489af6662e8f5088c, type: 3}
       propertyPath: openSpeed
-      value: 0.5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1972986865695061603, guid: 6e5622096479dbb489af6662e8f5088c, type: 3}
       propertyPath: closeSpeed
-      value: 5
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1972986865695061603, guid: 6e5622096479dbb489af6662e8f5088c, type: 3}
       propertyPath: movePosition.x
@@ -18513,7 +18513,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 114595246120267782, guid: 363e6eb5de43c984f8eaef7a253cbfb5, type: 3}
       propertyPath: closeSpeed
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 114595246120267782, guid: 363e6eb5de43c984f8eaef7a253cbfb5, type: 3}
       propertyPath: movePosition.x
@@ -18635,11 +18635,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6458892050187151182, guid: 06f28a671adfae24e9a1b9f4c3ce45b9, type: 3}
       propertyPath: openSpeed
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6458892050187151182, guid: 06f28a671adfae24e9a1b9f4c3ce45b9, type: 3}
       propertyPath: closeSpeed
-      value: 0.035
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6458892050187151182, guid: 06f28a671adfae24e9a1b9f4c3ce45b9, type: 3}
       propertyPath: movePosition.x
@@ -18779,11 +18779,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1972986865695061603, guid: 6e5622096479dbb489af6662e8f5088c, type: 3}
       propertyPath: openSpeed
-      value: 0.5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1972986865695061603, guid: 6e5622096479dbb489af6662e8f5088c, type: 3}
       propertyPath: closeSpeed
-      value: 3
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1972986865695061603, guid: 6e5622096479dbb489af6662e8f5088c, type: 3}
       propertyPath: movePosition.x

@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using static ButtonController;
 
 public class ButtonManager : Singleton<ButtonManager>
 {
     public List<ButtonController>[] buttons;
     public List<ButtonEventSubscriber> eventSubscribers;
+
+    
 
     public void SetStageEvent()
     {

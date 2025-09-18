@@ -47,7 +47,7 @@ public class MenuUIManager : MonoBehaviour
     {
         if(frontUI != UIType.None || isChanging) return;
         StartCoroutine(ConversionTimeCoroutine());
-
+        AudioManager.Instance.PlaySFX(SFX.ButtonPress);
         TitleRectTrans.DOLocalMoveX(titleOriginPos.x - MoveXDistance, uiMoveTime).SetEase(Ease.InOutBack);
         StageSelectObj.DOLocalMoveX(stageSelectOriginPos.x - MoveXDistance, uiMoveTime).SetEase(Ease.InOutBack);
 
@@ -56,6 +56,7 @@ public class MenuUIManager : MonoBehaviour
 
     public void OnClickExitButton()
     {
+        AudioManager.Instance.PlaySFX(SFX.ButtonPress);
         Application.Quit();
     }
 
@@ -63,7 +64,7 @@ public class MenuUIManager : MonoBehaviour
     {
         if(frontUI != UIType.StageSelect || isChanging) return;
         StartCoroutine(ConversionTimeCoroutine());
-
+        AudioManager.Instance.PlaySFX(SFX.ButtonPress);
         TitleRectTrans.DOLocalMoveX(titleOriginPos.x, uiMoveTime).SetEase(Ease.InOutBack);
         StageSelectObj.DOLocalMoveX(stageSelectOriginPos.x, uiMoveTime).SetEase(Ease.InOutBack);
 
@@ -80,6 +81,7 @@ public class MenuUIManager : MonoBehaviour
 
     public void OnClickStageButton(int stageNum)
     {
+        AudioManager.Instance.PlaySFX(SFX.ButtonPress);
         isChanging = true;
         GameManager.Instance.LoadStage(stageNum);
     }

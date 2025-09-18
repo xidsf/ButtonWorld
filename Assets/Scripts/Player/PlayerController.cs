@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
 
     Vector2 moveDir;
 
-    public event Action onDeath;
+    public event Action<bool> onDeath;
 
 
     private void Start()
@@ -101,8 +101,7 @@ public class PlayerController : MonoBehaviour
     private void CheckStuck()
     {
         if (isAir) return;
-
-        
+        if(isDeath || isClear) return;
         Vector3 center = myColli.bounds.center;
         bool isStucked = false;
 
@@ -181,6 +180,7 @@ public class PlayerController : MonoBehaviour
 
         if (isStucked)
         {
+            AudioManager.Instance.PlaySFX(SFX.PlayerDie);
             StartCoroutine(DeathCoroutine());
         }
         
@@ -256,7 +256,7 @@ public class PlayerController : MonoBehaviour
             if(GameManager.Instance.IsStageResetable)
             {
                 myInput.currentActionMap.Disable();
-                onDeath?.Invoke();
+                onDeath?.Invoke(false);
             }
             
         }
@@ -283,6 +283,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Trap"))
         {
+            AudioManager.Instance.PlaySFX(SFX.PlayerDie);
             StartCoroutine(DeathCoroutine());
         }
     }
@@ -296,7 +297,7 @@ public class PlayerController : MonoBehaviour
         myAnim.SetTrigger(deathString);
         myInput.currentActionMap.Disable();
         yield return new WaitForSeconds(0.5f);
-        onDeath?.Invoke();
+        onDeath?.Invoke(false);
     }
 
     public void OnCollisionGoal(Collider2D goalColli)

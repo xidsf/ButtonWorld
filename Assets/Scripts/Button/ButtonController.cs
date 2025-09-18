@@ -30,6 +30,13 @@ public class ButtonController : MonoBehaviour
     private bool isPressed = false;
     private float pressedY = 0.29f;
 
+    static readonly Dictionary<ButtonType, bool> buttonSFXPlayed = new Dictionary<ButtonType, bool>()
+    {
+        { ButtonType.Stone, false },
+        { ButtonType.Brown, false },
+        { ButtonType.Yellow, false }
+    };
+
     private void Start()
     {
         originLocalTransform = buttonTransform.localPosition;
@@ -59,9 +66,19 @@ public class ButtonController : MonoBehaviour
         if (isPressed)
         {
             onPressed?.Invoke(isPressedMaintained);
-            if(isPressedMaintained)
+            
+            if (isPressedMaintained)
             {
+                if (!buttonSFXPlayed[buttonType])
+                {
+                    AudioManager.Instance.PlaySFX(SFX.ButtonPress);
+                    buttonSFXPlayed[buttonType] = true;
+                }
                 SetSameColorButtonsPressed();
+            }
+            else
+            {
+                AudioManager.Instance.PlaySFX(SFX.ButtonPress);
             }
         }
         else
@@ -99,10 +116,24 @@ public class ButtonController : MonoBehaviour
         }
     }
 
+    public static void ResetAudioPlay()
+    {
+        for (int i = 0; i < (int)ButtonType.Yellow + 1; i++)
+        {
+            buttonSFXPlayed[(ButtonType)i] = false;
+        }
+    }
+
     private void ReleaseButton()
     {
         if (isPressedMaintained && isPressed)
         {
+            if (buttonSFXPlayed[buttonType])
+            {
+                AudioManager.Instance.PlaySFX(SFX.ButtonRelease);
+                buttonSFXPlayed[buttonType] = false;
+            }
+
             buttonTransform.localPosition = new Vector3(buttonTransform.localPosition.x, buttonTransform.localPosition.y + 0.1f, buttonTransform.localPosition.z);
             buttonRigid.constraints = rigidConstrain;
             isPressed = false;

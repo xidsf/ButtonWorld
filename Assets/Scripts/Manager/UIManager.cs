@@ -17,10 +17,12 @@ public class UIManager : Singleton<UIManager>
     public bool IsOpenIngameMenu { get { return isOpenIngameMenu; } }
     private bool isOpenIngameMenu = false;
 
+    private bool isFadeing = false;
+
     public IEnumerator FadeOut()
     {
         fadeImage.gameObject.SetActive(true);
-
+        isFadeing = true;
         float elapsed = 0f;
         
         while (elapsed < FADE_TIME)
@@ -30,13 +32,14 @@ public class UIManager : Singleton<UIManager>
             SetFadeAlpha(alpha);
             yield return null;
         }
-
+        isFadeing = false;
         SetFadeAlpha(1f);
     }
 
     public IEnumerator FadeIn()
     {
         fadeImage.gameObject.SetActive(true);
+        isFadeing = true;
         float elapsed = 0f;
 
         while (elapsed < FADE_TIME)
@@ -48,6 +51,7 @@ public class UIManager : Singleton<UIManager>
         }
 
         SetFadeAlpha(0f);
+        isFadeing = false;
         fadeImage.gameObject.SetActive(false);
     }
 
@@ -75,6 +79,7 @@ public class UIManager : Singleton<UIManager>
 
     public void OnClickReturnMenuButton()
     {
+        AudioManager.Instance.PlaySFX(SFX.ButtonPress);
         GameManager.Instance.LoadSelectMenu();
         Invoke("DisableClearUI", FADE_TIME);
         DisableIngameMenuUI();
@@ -82,8 +87,9 @@ public class UIManager : Singleton<UIManager>
 
     public void OnClickNextStageButton()
     {
+        AudioManager.Instance.PlaySFX(SFX.ButtonPress);
         GameManager.Instance.SetStageToNext();
-        GameManager.Instance.ResetCurrStage();
+        GameManager.Instance.ResetCurrStage(true);
     }
 
     private void DisableClearUI()
@@ -95,7 +101,7 @@ public class UIManager : Singleton<UIManager>
     public void EnableIngameMenuUI()
     {
         if (GameManager.Instance.CurrentStageNum == -1) return;
-        if (isClear) return;
+        if (isClear || isFadeing) return;
         isOpenIngameMenu = true;
         PauseUI.SetActive(true);
     }

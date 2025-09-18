@@ -40,7 +40,7 @@ public class DoorController : MonoBehaviour
         StopAllCoroutines();
         //StartCoroutine(DoorMoveCoroutine(openPosition));
         DOTween.Kill(myRigid);
-        myRigid.DOMove(openPosition, openSpeed).SetEase(easeType);
+        myRigid.DOMove(openPosition, openSpeed).SetSpeedBased(true).SetEase(easeType);
     }
 
     private void CloseDoor()
@@ -52,7 +52,7 @@ public class DoorController : MonoBehaviour
         StopAllCoroutines();
         //StartCoroutine(DoorMoveCoroutine(originPosition));
         DOTween.Kill(myRigid);
-        myRigid.DOMove(originPosition, closeSpeed).SetEase(easeType);
+        myRigid.DOMove(originPosition, closeSpeed).SetSpeedBased(true).SetEase(easeType);
     }
 
     private void ReleaseDoor()

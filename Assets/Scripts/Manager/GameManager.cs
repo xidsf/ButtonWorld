@@ -80,25 +80,30 @@ public class GameManager : Singleton<GameManager>
     {
         if (isChanging) return;
         StartCoroutine(LoadStageCoroutine(stage));
+        ButtonController.ResetAudioPlay();
         lastResetTime = Time.time;
     }
 
-    public void ResetCurrStage()
+    public void ResetCurrStage(bool isNextStage = false)
     {
         if (isChanging) return;
         if (Time.time - lastResetTime < resetCooldown && !playerInstance.IsDeath) return;
-        StartCoroutine(ResetIngame());
+        StartCoroutine(ResetIngame(isNextStage));
+        ButtonController.ResetAudioPlay();
         lastResetTime = Time.time;
     }
 
     private IEnumerator LoadSelectMenuCoroutine()
     {
         isChanging = true;
+        AudioManager.Instance.StopBGM();
         currentStage = null;
         playerInstance = null;
         StartCoroutine(UIManager.Instance.FadeOut());
         yield return new WaitForSeconds(UIManager.FADE_TIME);
+        UIManager.Instance.HideAllUI();
         currentStageNum = -1;
+        AudioManager.Instance.PlayBGM(BGM.Title);
         LoadScene(SceneName.Menu);
 
         isChanging = false;
@@ -107,7 +112,7 @@ public class GameManager : Singleton<GameManager>
     private IEnumerator LoadStageCoroutine(int stage)
     {
         isChanging = true;
-        
+        AudioManager.Instance.StopBGM();
         StartCoroutine(UIManager.Instance.FadeOut());
         yield return new WaitForSeconds(UIManager.FADE_TIME);
         if (currentStage != null)
@@ -130,37 +135,12 @@ public class GameManager : Singleton<GameManager>
 
         StartCoroutine(UIManager.Instance.FadeIn());
         ButtonManager.Instance.SetStageEvent();
+        AudioManager.Instance.PlayBGM(BGM.InGame);
 
-        
         isChanging = false;
     }
 
-    private AsyncOperation LoadSceneAsync(SceneName name)
-    {
-        if (SceneManager.GetActiveScene().name == name.ToString())
-        {
-            return null;
-        }
-        else
-        {
-            return SceneManager.LoadSceneAsync(name.ToString());
-        }
-    }
-
-    private void LoadScene(SceneName name)
-    {
-        if(SceneManager.GetActiveScene().name == name.ToString())
-        {
-            return;
-        }
-        else
-        {
-            SceneManager.LoadScene(name.ToString());
-        }
-    }
-
-
-    public IEnumerator ResetIngame()
+    public IEnumerator ResetIngame(bool isNextStage = false)
     {
         isChanging = true;
         StartCoroutine(UIManager.Instance.FadeOut());
@@ -184,10 +164,41 @@ public class GameManager : Singleton<GameManager>
         UIManager.Instance.HideAllUI();
 
         StartCoroutine(UIManager.Instance.FadeIn());
+        AudioManager.Instance.PlayBGM(BGM.InGame);
+        if (!isNextStage)
+        {
+            AudioManager.Instance.PlaySFX(SFX.GameOver);
+        }
+        
         yield return new WaitForSeconds(UIManager.FADE_TIME);
 
         isChanging = false;
     }
+
+    private AsyncOperation LoadSceneAsync(SceneName name)
+    {
+        if (SceneManager.GetActiveScene().name == name.ToString())
+        {
+            return null;
+        }
+        else
+        {
+            return SceneManager.LoadSceneAsync(name.ToString());
+        }
+    }
+
+    private void LoadScene(SceneName name)
+    {
+        if (SceneManager.GetActiveScene().name == name.ToString())
+        {
+            return;
+        }
+        else
+        {
+            SceneManager.LoadScene(name.ToString());
+        }
+    }
+
 
     public void ClearStage()
     {
@@ -198,7 +209,9 @@ public class GameManager : Singleton<GameManager>
     IEnumerator ClearCoroutine()
     {
         isChanging = true;
+        AudioManager.Instance.StopBGM();
         yield return new WaitForSeconds(1.3f);
+        AudioManager.Instance.PlaySFX(SFX.Victory);
         UIManager.Instance.EnableClearUI();
         isChanging = false;
     }
