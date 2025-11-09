@@ -57,13 +57,14 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if(isDeath || isClear) return;
-        GroundCheck();
+        //GroundCheck();
         ApplyMovement();
     }
 
     private void FixedUpdate()
     {
         CheckStuck();
+        GroundCheck();
     }
 
     private void GroundCheck()
