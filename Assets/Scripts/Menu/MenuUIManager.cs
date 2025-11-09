@@ -13,10 +13,8 @@ public class MenuUIManager : MonoBehaviour
     public float MoveXDistance = 1920f;
     public float MoveYDistance = 1080f;
 
-    [SerializeField] private RectTransform TitleRectTrans;
-    private Vector3 titleOriginPos;
-    [SerializeField] private RectTransform StageSelectObj;
-    private Vector3 stageSelectOriginPos;
+    [SerializeField] private RectTransform MainUITrans;
+    private Vector3 mainUITransOriginPos;
 
     private float uiMoveTime = 0.5f;
     private bool isChanging = false;
@@ -26,7 +24,7 @@ public class MenuUIManager : MonoBehaviour
     private void Start()
     {
         StartCoroutine(UIManager.Instance.FadeIn());
-        GetOriginPos();
+        SetOriginPos();
     }
 
     private void Update()
@@ -37,10 +35,9 @@ public class MenuUIManager : MonoBehaviour
         }
     }
 
-    private void GetOriginPos()
+    private void SetOriginPos()
     {
-        titleOriginPos = TitleRectTrans.localPosition;
-        stageSelectOriginPos = StageSelectObj.localPosition;
+        mainUITransOriginPos = MainUITrans.localPosition;
     }
 
     public void OnClickStageSelectButton()
@@ -48,8 +45,7 @@ public class MenuUIManager : MonoBehaviour
         if(frontUI != UIType.None || isChanging) return;
         StartCoroutine(ConversionTimeCoroutine());
         AudioManager.Instance.PlaySFX(SFX.ButtonPress);
-        TitleRectTrans.DOLocalMoveX(titleOriginPos.x - MoveXDistance, uiMoveTime).SetEase(Ease.InOutBack);
-        StageSelectObj.DOLocalMoveX(stageSelectOriginPos.x - MoveXDistance, uiMoveTime).SetEase(Ease.InOutBack);
+        MainUITrans.DOLocalMoveY(mainUITransOriginPos.y + MoveYDistance, uiMoveTime).SetEase(Ease.InOutBack);
 
         frontUI = UIType.StageSelect;
     }
@@ -65,9 +61,7 @@ public class MenuUIManager : MonoBehaviour
         if(frontUI != UIType.StageSelect || isChanging) return;
         StartCoroutine(ConversionTimeCoroutine());
         AudioManager.Instance.PlaySFX(SFX.ButtonPress);
-        TitleRectTrans.DOLocalMoveX(titleOriginPos.x, uiMoveTime).SetEase(Ease.InOutBack);
-        StageSelectObj.DOLocalMoveX(stageSelectOriginPos.x, uiMoveTime).SetEase(Ease.InOutBack);
-
+        MainUITrans.DOLocalMoveY(mainUITransOriginPos.y, uiMoveTime).SetEase(Ease.InOutBack);
         frontUI = UIType.None;
     }
 
