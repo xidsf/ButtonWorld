@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,6 +13,10 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] bool isAir;
     bool isFall;
+    [SerializeField] bool isJumpable = true;
+    const float coyoteTime = 0.1f;
+    float coyoteTimeCounter = 0f;
+
     float halfColliderHeight;
     float halfColliderWidth;
     float offset = 0.05f;
@@ -57,7 +60,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if(isDeath || isClear) return;
-        //GroundCheck();
+        CalcCoyoteTime();
         ApplyMovement();
     }
 
@@ -95,8 +98,25 @@ public class PlayerController : MonoBehaviour
             }
             isAir = true;
         }
+        if (isAir == false) isJumpable = true;
         myAnim.SetBool(isAirString, isAir);
         myAnim.SetBool(isFallingString, isFall);
+    }
+
+    private void CalcCoyoteTime()
+    {
+        if(isAir && isJumpable)
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+            if(coyoteTimeCounter <= 0f)
+            {
+                isJumpable = false;
+            }
+        }
+        else if(coyoteTimeCounter <= 0)
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
     }
 
     private void CheckStuck()
@@ -223,7 +243,7 @@ public class PlayerController : MonoBehaviour
     public void Jump(InputAction.CallbackContext context)
     {
         if (UIManager.Instance.IsOpenIngameMenu) return;
-        if (!isAir && context.started)
+        if (isJumpable && context.started)
         {
             myAnim.SetTrigger(isJumpString);
             myRigid.linearVelocityY = jumpSpeed;
