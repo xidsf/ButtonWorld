@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool isJumpable = true;
     const float coyoteTime = 0.1f;
     float coyoteTimeCounter = 0f;
+    const float jumpBufferTime = 0.1f;
+    float jumpBufferTimeCounter = 0f;
 
     float halfColliderHeight;
     float halfColliderWidth;
@@ -61,6 +63,8 @@ public class PlayerController : MonoBehaviour
     {
         if(isDeath || isClear) return;
         CalcCoyoteTime();
+        CalcJumpBuffer();
+        TryJump();
         ApplyMovement();
     }
 
@@ -243,10 +247,30 @@ public class PlayerController : MonoBehaviour
     public void Jump(InputAction.CallbackContext context)
     {
         if (UIManager.Instance.IsOpenIngameMenu) return;
-        if (isJumpable && context.started)
+        if (context.started)
+        {
+            jumpBufferTimeCounter = jumpBufferTime;
+
+            //myAnim.SetTrigger(isJumpString);
+            //myRigid.linearVelocityY = jumpSpeed;
+        }
+    }
+
+    private void CalcJumpBuffer()
+    {
+        if (jumpBufferTimeCounter > 0f)
+        {
+            jumpBufferTimeCounter -= Time.deltaTime;
+        }
+    }
+
+    private void TryJump()
+    {
+        if (isJumpable && jumpBufferTimeCounter > 0)
         {
             myAnim.SetTrigger(isJumpString);
             myRigid.linearVelocityY = jumpSpeed;
+            jumpBufferTimeCounter = 0f;
         }
     }
 
