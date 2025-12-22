@@ -40,6 +40,22 @@ public class AudioManager : Singleton<AudioManager>
         PlayBGM(BGM.Title);
     }
 
+    public void SetBGMVolume(float value)
+    {
+        foreach(var bgm in m_BGMPlayer.Values)
+        {
+            bgm.volume = value;
+        }
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        foreach (var sfx in m_SFXPlayer.Values)
+        {
+            sfx.volume = value;
+        }
+    }
+
     private void LoadBGMPLayer()
     {
         for (int i = 0; i < (int)BGM.COUNT; i++)
@@ -63,6 +79,8 @@ public class AudioManager : Singleton<AudioManager>
 
             m_BGMPlayer[(BGM)i] = newAudioSource;
         }
+
+        SetBGMVolume(0.1f);
     }
 
     private void LoadSFXPlayer()
@@ -88,6 +106,8 @@ public class AudioManager : Singleton<AudioManager>
 
             m_SFXPlayer[(SFX)i] = newAudioSource;
         }
+
+        SetSFXVolume(0.1f);
     }
 
     public void PlayBGM(BGM bgm)

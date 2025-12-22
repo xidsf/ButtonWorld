@@ -64,7 +64,6 @@ public class PlayerController : MonoBehaviour
         if(isDeath || isClear) return;
         CalcCoyoteTime();
         CalcJumpBuffer();
-        TryJump();
         ApplyMovement();
     }
 
@@ -244,7 +243,7 @@ public class PlayerController : MonoBehaviour
         moveDir = context.ReadValue<Vector2>();
     }
 
-    public void Jump(InputAction.CallbackContext context)
+    public void TryJump(InputAction.CallbackContext context)
     {
         if (UIManager.Instance.IsOpenIngameMenu) return;
         if (context.started)
@@ -262,16 +261,17 @@ public class PlayerController : MonoBehaviour
         {
             jumpBufferTimeCounter -= Time.deltaTime;
         }
-    }
-
-    private void TryJump()
-    {
         if (isJumpable && jumpBufferTimeCounter > 0)
         {
-            myAnim.SetTrigger(isJumpString);
-            myRigid.linearVelocityY = jumpSpeed;
-            jumpBufferTimeCounter = 0f;
+            Jump();
         }
+    }
+
+    private void Jump()
+    {
+        myAnim.SetTrigger(isJumpString);
+        myRigid.linearVelocityY = jumpSpeed;
+        jumpBufferTimeCounter = 0f;
     }
 
     public void Interacat(InputAction.CallbackContext context)
