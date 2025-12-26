@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 3314026198335968163}
   - component: {fileID: 908503485129307567}
   - component: {fileID: 8584544270964916868}
-  - component: {fileID: 4902269689863270956}
   - component: {fileID: 2728224418503541050}
   - component: {fileID: 7070514934132435490}
   - component: {fileID: 6151451609610762661}
+  - component: {fileID: 4902269689863270956}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -242,22 +242,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &4902269689863270956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6814332418255187521}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 943aa9627179ceb489229744830c1cb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isAir: 0
-  isJumpable: 1
-  jumpSpeed: 9
-  moveSpeed: 5
 --- !u!95 &2728224418503541050
 Animator:
   serializedVersion: 7
@@ -353,3 +337,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.57, y: 0.7692616}
   m_EdgeRadius: 0
+--- !u!114 &4902269689863270956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6814332418255187521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 943aa9627179ceb489229744830c1cb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isAir: 0
+  isJumpable: 1
+  jumpSpeed: 9
+  moveSpeed: 5
