@@ -16,7 +16,7 @@ public class GoalCheck : MonoBehaviour
             var player = collision.GetComponent<PlayerController>();
             if(player != null)
             {
-                player.OnCollisionGoal(goalColli);
+                //player.OnCollisionGoal(goalColli);
                 GameManager.Instance.ClearStage();
             }
         }
