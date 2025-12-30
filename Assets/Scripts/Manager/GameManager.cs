@@ -87,7 +87,7 @@ public class GameManager : Singleton<GameManager>
     public void ResetCurrStage(bool isNextStage = false)
     {
         if (isChanging) return;
-        //if (Time.time - lastResetTime < resetCooldown && !playerInstance.IsDeath) return;
+        if (Time.time - lastResetTime < resetCooldown && playerInstance.StateType != PlayerStateType.Death) return;
         StartCoroutine(ResetIngame(isNextStage));
         ButtonController.ResetAudioPlay();
         lastResetTime = Time.time;

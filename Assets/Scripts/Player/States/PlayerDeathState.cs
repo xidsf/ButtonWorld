@@ -20,6 +20,7 @@ public class PlayerDeathState : PlayerBaseState
     public override void OnExit()
     {
         base.OnExit();
+        player.StopCoroutine(deathCoroutine);
     }
 
     IEnumerator DeathCoroutine()

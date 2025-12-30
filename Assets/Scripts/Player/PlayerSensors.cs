@@ -30,31 +30,33 @@ public class PlayerSensors : MonoBehaviour
         Vector2 size;
         Collider2D coli;
 
+        int combinedLayerMask = player.GetGroundLayerMask() | player.ButtonLayerMask();
+
         {
             pos = new Vector2(bounds.center.x, bounds.center.y - bounds.extents.y - GROUND_CHECK_DISTANCE);
             size = new Vector2(bounds.size.x * 0.9f, GROUND_CHECK_DISTANCE * 2f);
-            coli = Physics2D.OverlapBox(pos, size, 0f, player.GetGroundLayerMask());
+            coli = Physics2D.OverlapBox(pos, size, 0f, combinedLayerMask);
             DrawBoxCast(pos, size, 0f, Vector2.zero, 0f, Color.red);
             isBottomContacted = (coli != null);
         }
         {    
             pos = new Vector2(bounds.center.x, bounds.center.y + bounds.extents.y + GROUND_CHECK_DISTANCE);
             size = new Vector2(bounds.size.x * 0.9f, GROUND_CHECK_DISTANCE * 2f);
-            coli = Physics2D.OverlapBox(pos, size, 0f, player.GetGroundLayerMask());
+            coli = Physics2D.OverlapBox(pos, size, 0f, combinedLayerMask);
             DrawBoxCast(pos, size, 0f, Vector2.zero, 0f, Color.red);
             isTopContacted = (coli != null);
         }
         {
             pos = new Vector2(bounds.center.x - bounds.extents.x - GROUND_CHECK_DISTANCE, bounds.center.y);
             size = new Vector2(GROUND_CHECK_DISTANCE * 2f, bounds.size.y * 0.9f);
-            coli = Physics2D.OverlapBox(pos, size, 0f, player.GetGroundLayerMask());
+            coli = Physics2D.OverlapBox(pos, size, 0f, combinedLayerMask);
             DrawBoxCast(pos, size, 0f, Vector2.zero, 0f, Color.red);
             isLeftContacted = (coli != null);
         }
         {
             pos = new Vector2(bounds.center.x + bounds.extents.x + GROUND_CHECK_DISTANCE, bounds.center.y);
             size = new Vector2(GROUND_CHECK_DISTANCE * 2f, bounds.size.y * 0.9f);
-            coli = Physics2D.OverlapBox(pos, size, 0f, player.GetGroundLayerMask());
+            coli = Physics2D.OverlapBox(pos, size, 0f, combinedLayerMask);
             DrawBoxCast(pos, size, 0f, Vector2.zero, 0f, Color.red);
             isRightContacted = (coli != null);
         }

@@ -2,11 +2,14 @@ using UnityEngine;
 
 public enum PlayerStateType
 {
+    Playing,
+    Grounded,
     Idle,
     Move,
     Air,
+    AirJump,
+    AirFall,
     Death,
-    Menu,
     Clear,
     Count
 }
@@ -23,12 +26,7 @@ public abstract class PlayerBaseState
     protected string deathAnimString = "isDeath";
     protected string clearAnimString = "isClear";
 
-    public virtual void OnMoveStarted(Vector2 dir)
-    {
-
-    }
-
-    public virtual void OnMovePerformed(Vector2 dir)
+    public virtual void OnMove(Vector2 inputDir)
     {
 
     }
@@ -64,7 +62,7 @@ public abstract class PlayerBaseState
 
     public virtual void OnExit()
     {
-
+        
     }
 
     public virtual void OnUpdate()
@@ -76,5 +74,8 @@ public abstract class PlayerBaseState
     {
     }
 
-    
+    protected void Move()
+    {
+
+    }
 }

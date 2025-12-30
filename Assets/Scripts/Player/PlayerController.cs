@@ -4,34 +4,34 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    Animator myAnim;
-    Rigidbody2D myRigid;
-    PlayerInput myInput;
-    Collider2D myColli;
-    PlayerSensors mySensors;
-
+    private Animator myAnim;
+    private Rigidbody2D myRigid;
+    private PlayerInput myInput;
+    private Collider2D myColli;
+    private PlayerSensors mySensors;
     public Animator MyAnim { get { return myAnim; } }
     public Rigidbody2D MyRigid { get { return myRigid; } }
     public Collider2D MyColli { get { return myColli; } }
     public PlayerInput MyInput { get { return myInput; } }
     public PlayerSensors MySensors { get { return mySensors; } }
 
-    LayerMask groundLayerMask;
-    LayerMask buttonLayerMask;
-
+    private LayerMask groundLayerMask;
+    private LayerMask buttonLayerMask;
     public LayerMask GetGroundLayerMask() { return groundLayerMask; }
     public LayerMask ButtonLayerMask() { return buttonLayerMask; }
 
-    PlayerBaseState currentState;
+    private PlayerBaseState currentState;
     private Dictionary<PlayerStateType, PlayerBaseState> states = new Dictionary<PlayerStateType, PlayerBaseState>();
-
     [SerializeField] private PlayerStateType currentStateType = PlayerStateType.Idle;
     public PlayerStateType StateType { get { return currentStateType; } } 
 
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float jumpForce = 8f;
     public float MoveSpeed { get { return moveSpeed; } }
     public float JumpForce { get { return jumpForce; } }
+
+    private Vector2 inputDir;
+    public Vector2 InputDir { get { return inputDir; } }
 
     private void Start()
     {
@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
         myRigid = GetComponent<Rigidbody2D>();
         myColli = GetComponent<Collider2D>();
         myInput = GetComponent<PlayerInput>();
+        mySensors = GetComponent<PlayerSensors>();
 
         InitStates();
 
@@ -50,10 +51,10 @@ public class PlayerController : MonoBehaviour
     {
         states.Add(PlayerStateType.Idle, new PlayerIdleState());
         states.Add(PlayerStateType.Move, new PlayerMoveState());
-        states.Add(PlayerStateType.Air, new PlayerAirState());
         states.Add(PlayerStateType.Death, new PlayerDeathState());
-        states.Add(PlayerStateType.Menu, new PlayerMenuState());
         states.Add(PlayerStateType.Clear, new PlayerClearState());
+        states.Add(PlayerStateType.AirJump, new PlayerAirJumpState());
+        states.Add(PlayerStateType.AirFall, new PlayerAirFallState());
 
         currentState = states[PlayerStateType.Idle];
         currentState.OnEnter(this);
@@ -65,6 +66,15 @@ public class PlayerController : MonoBehaviour
         currentState = states[newState];
         currentStateType = newState;
         currentState.OnEnter(this);
+        Debug.Log("Switched to state: " + newState.ToString());
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.collider.CompareTag("Trap"))
+        {
+            SwitchState(PlayerStateType.Death);
+        }
     }
 
     private void Update()
@@ -72,24 +82,29 @@ public class PlayerController : MonoBehaviour
         currentState.OnUpdate();
     }
 
+    private void FixedUpdate()
+    {
+        currentState.OnFixedUpdate();
+    }
+
     public void OnMoveInput(InputAction.CallbackContext context)
     {
+        if (UIManager.Instance.IsOpenIngameMenu) return;
         if (context.started)
         {
-            currentState.OnMoveStarted(context.ReadValue<Vector2>());
+            inputDir = context.ReadValue<Vector2>();
+            currentState.OnMove(inputDir);
         }
-        else if(context.performed)
+        if(context.canceled)
         {
-            currentState.OnMovePerformed(context.ReadValue<Vector2>());
-        }
-        else if (context.canceled)
-        {
+            inputDir = Vector2.zero;
             currentState.OnMoveCanceled();
         }
     }
 
     public void OnJumpInput(InputAction.CallbackContext context)
     {
+        if (UIManager.Instance.IsOpenIngameMenu) return;
         if (context.started)
         {
             currentState.OnJump();
@@ -98,6 +113,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnInteractInput(InputAction.CallbackContext context)
     {
+        if (UIManager.Instance.IsOpenIngameMenu) return;
         if (context.started)
         {
             currentState.OnInteract();
@@ -106,6 +122,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnRestartInput(InputAction.CallbackContext context)
     {
+        if (UIManager.Instance.IsOpenIngameMenu) return;
         if (context.started)
         {
             currentState.OnRestart();
