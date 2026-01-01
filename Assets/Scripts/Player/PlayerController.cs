@@ -33,6 +33,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 inputDir;
     public Vector2 InputDir { get { return inputDir; } }
 
+    private Collider2D goalCollider;
+    public Collider2D GoalCollider { get { return goalCollider; } }
+
     private void Start()
     {
         myAnim = GetComponent<Animator>();
@@ -60,15 +63,6 @@ public class PlayerController : MonoBehaviour
         currentState.OnEnter(this);
     }
 
-    public void SwitchState(PlayerStateType newState)
-    {
-        currentState.OnExit();
-        currentState = states[newState];
-        currentStateType = newState;
-        currentState.OnEnter(this);
-        Debug.Log("Switched to state: " + newState.ToString());
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.collider.CompareTag("Trap"))
@@ -76,6 +70,22 @@ public class PlayerController : MonoBehaviour
             SwitchState(PlayerStateType.Death);
         }
     }
+
+    public void SwitchState(PlayerStateType newState)
+    {
+        currentState.OnExit();
+        currentState = states[newState];
+        currentStateType = newState;
+        currentState.OnEnter(this);
+    }
+
+    public void SetClearCollider(Collider2D coll)
+    {
+        goalCollider = coll;
+    }
+
+    //State패턴 코드
+    //------------------------------
 
     private void Update()
     {

@@ -12,7 +12,7 @@ public class PlayerDeathState : PlayerBaseState
     public override void OnEnter(PlayerController player)
     {
         base.OnEnter(player);
-
+        AudioManager.Instance.PlaySFX(SFX.PlayerDie);
         deathCoroutine = player.StartCoroutine(DeathCoroutine());
 
     }
@@ -30,6 +30,6 @@ public class PlayerDeathState : PlayerBaseState
         player.MyAnim.SetTrigger(deathString);
         player.MyInput.currentActionMap.Disable();
         yield return new WaitForSeconds(0.5f);
-        //onDeath?.Invoke(false);
+        GameManager.Instance.ResetCurrStage();
     }
 }

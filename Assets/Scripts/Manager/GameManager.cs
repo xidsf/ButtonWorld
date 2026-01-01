@@ -58,17 +58,6 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void Update()
-    {
-        if(currentStageNum != -1 )
-        {
-            if(Input.GetKeyDown(KeyCode.R))
-            {
-                ResetIngame();
-            }
-        }
-    }
-
     public void LoadSelectMenu()
     {
         if (isChanging) return;

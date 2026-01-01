@@ -14,7 +14,7 @@ public class PlayerGroundedState : PlayerPlayingState
 
     private void GroundCheck()
     {
-        if (!player.MySensors.IsBottomContacted() || player.MyRigid.linearVelocityY > 0.05f)
+        if (!player.MySensors.IsBottomContacted() /*|| player.MyRigid.linearVelocityY > 0.05f*/)
         {
             if (player.MyRigid.linearVelocityY < 0f)
             {
