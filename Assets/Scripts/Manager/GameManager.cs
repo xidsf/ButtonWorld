@@ -58,17 +58,6 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void Update()
-    {
-        if(currentStageNum != -1 )
-        {
-            if(Input.GetKeyDown(KeyCode.R))
-            {
-                ResetIngame();
-            }
-        }
-    }
-
     public void LoadSelectMenu()
     {
         if (isChanging) return;
@@ -87,7 +76,7 @@ public class GameManager : Singleton<GameManager>
     public void ResetCurrStage(bool isNextStage = false)
     {
         if (isChanging) return;
-        if (Time.time - lastResetTime < resetCooldown && !playerInstance.IsDeath) return;
+        if (Time.time - lastResetTime < resetCooldown && playerInstance.StateType != PlayerStateType.Death) return;
         StartCoroutine(ResetIngame(isNextStage));
         ButtonController.ResetAudioPlay();
         lastResetTime = Time.time;
@@ -126,7 +115,7 @@ public class GameManager : Singleton<GameManager>
 
         cinemaCamera = FindAnyObjectByType<CinemachineCamera>();
         playerInstance = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
-        playerInstance.onDeath += ResetCurrStage;
+        //playerInstance.onDeath += ResetCurrStage;
         cinemaCamera.Follow = playerInstance.gameObject.transform;
 
         currentStageNum = stage;
@@ -156,7 +145,7 @@ public class GameManager : Singleton<GameManager>
         currentStage = Instantiate(stages[currentStageNum], Vector3.zero, Quaternion.identity);
         playerInstance = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
 
-        playerInstance.onDeath += ResetCurrStage;
+        //playerInstance.onDeath += ResetCurrStage;
         cinemaCamera.Follow = playerInstance.gameObject.transform;
 
         ButtonManager.Instance.SetStageEvent();

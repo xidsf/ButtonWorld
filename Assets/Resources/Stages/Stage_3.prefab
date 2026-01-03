@@ -28030,7 +28030,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6458892050187151182, guid: 06f28a671adfae24e9a1b9f4c3ce45b9, type: 3}
       propertyPath: closeSpeed
-      value: 0.43
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 6458892050187151182, guid: 06f28a671adfae24e9a1b9f4c3ce45b9, type: 3}
       propertyPath: movePosition.y
